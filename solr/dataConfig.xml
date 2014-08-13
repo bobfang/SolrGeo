@@ -1,0 +1,31 @@
+<!-- webapp=/solr path=/dataimport params={optimize=false&indent=true&clean=true&commit=true&verbose=false&command=full-import&debug=false&wt=json&minrun=1000&maxrun=2000} -->
+<dataConfig>
+<dataSource type="JdbcDataSource" driver="com.mysql.jdbc.Driver" url="jdbc:mysql://localhost/" user="solrgeo" password="gpsmaps"/>
+    <document name="applicant">
+                <entity name="place" query="select p.featureid as featureid, p.name as p_name, state, p.stcou as p_stcou, county_name,county.CENSUS2010 as county_pop, concat(lat,',', p.long) as latlon, 
+county.cbsa as county_cbsa, county.csa as county_csa, cbsa.name as CBSA_NAME , cbsa.census2010pop as CBSA_POP
+,m.name as MSA_NAME, m.census2010pop as MSA_POP
+, csa.name as CSA_NAME, csa.census2010pop as CSA_POP
+from solrgeo_db.places p
+left outer join solrgeo_db.counties county on county.stcou = p.stcou
+left outer join solrgeo_db.cbsa cbsa on cbsa.cbsa = county.cbsa
+left outer join solrgeo_db.msa m on county.cbsa = m.cbsa
+left outer join solrgeo_db.csa csa on csa.csa = county.csa">
+                <field name="id" column="featureid"/>
+                <field name="city_name" column="p_name" />
+                <field name="city_state" column="state" />
+                <field name="county_fips" column="p_stcou" />
+                <field name="county_name" column="county_name" />
+                <field name="county_pop" column="county_pop" />
+                <field name="latlon" column="latlon" />
+                <field name="cbsa" column="county_cbsa" />
+                <field name="csa" column="county_csa" />
+                <field name="cbsa_name" column="CBSA_NAME" />
+                <field name="cbsa_pop" column="CBSA_POP" />
+                <field name="msa_name" column="MSA_NAME" />
+                <field name="msa_pop" column="MSA_POP" />
+                <field name="csa_pop" column="CSA_POP" />
+                <field name="csa_name" column="CSA_NAME" />
+            </entity>
+    </document>
+</dataConfig>
